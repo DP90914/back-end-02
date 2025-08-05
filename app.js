@@ -5,7 +5,6 @@
  * Data: 01/08/2025
  * Versão: 1.0
  *************************************************/
-
 /**
  * Forma de criar uma variavel
  * var -> permite criar um espaço em memoria (Variavel), esse metodo é considerado antigo. 
@@ -45,6 +44,14 @@
  * Não  NOT     !
 */
 
+const MESSAGE_ERRO_EMPTY = "ERRO: há um espaço vazio"
+const MESSAGE_ERRO_OUT_OF_RANGE = "ERRO: escolha um numero entre 0 a 10"
+const MESSAGE_ERRO_NAN = "ERRO: Não se pode colocar uma letra. Deve se colocar numero entre 0 a 10!"
+const MESSAGE_ERRO_NOT_NAN = "ERRO: Não se pode colocar um numero"
+
+//Import da biblioteca para calcular as medias escolares
+const mediaEscola = require('./modulo/media.js')
+
 // Import da biblioteca do readline para manipular a entrada de dados no terminal
 var readline = require('readline')
 
@@ -76,26 +83,24 @@ entradaDeDados.question('Digite o nome do aluno: ', function(nome){
                     let nota4 = valor4
             
                     if(nomeAluno == "" || nota1 == "" || nota2 == "" || nota3 == "" || nota4 == ""){
-                        console.log("ERRO: É obrigatório o preenchimento de todos as informações")
-                    }else if(Number(nota1) < 0 || Number(nota1) > 10 || Number(nota2) < 0 || Number(nota2) > 10 || Number(nota3) < 0 || Number(nota3) > 10 || Number(nota4) < 0 || Number(nota4) > 10){
-                        console.log("ERRO: Dados invalidos")
+                        console.log(MESSAGE_ERRO_EMPTY)
+                        //Validação de valores entre 0 até 10
+                    }else if(   Number(nota1) < 0 || Number(nota1) > 10 ||
+                                Number(nota2) < 0 || Number(nota2) > 10 ||
+                                Number(nota3) < 0 || Number(nota3) > 10 ||
+                                Number(nota4) < 0 || Number(nota4) > 10){
+                        console.log(MESSAGE_ERRO_OUT_OF_RANGE)
+                        // Validação para bloquear a entrada de letras
                     }else if(isNaN(nota1)|| isNaN(nota2)|| isNaN(nota3)|| isNaN(nota4)){
-                        console.log("ERRO: Não se pode colocar uma letra")
+                        console.log(MESSAGE_ERRO_NAN)
                     }else if(!isNaN(nomeAluno)){
-                        console.log("ERRO: Não se pode colocar um numero")                       
+                        console.log(MESSAGE_ERRO_NOT_NAN)                       
                     }else{
-                        let media = (Number(nota1) + Number(nota2) + Number(nota3) + Number(nota4)) / 4
-                        let statusAluno
-
-                        if(media >= 7  && media <= 10){
-                            statusAluno ="APROVADO"
-                        }else if(media < 7 && media >= 5){
-                            statusAluno ="EXAME"
-                        }else if(media < 5 && media >= 0){
-                            statusAluno = "REPROVADO"
+                        let media = mediaEscola.calcularMedia(nota1, nota2, nota3, nota4)
+                        let statusAluno = mediaEscola.validarStatusDaMedia(media)
+                        if(statusAluno){
+                            console.log(`O aluno(a) ${nome} teve média: ${media} e esta: ${statusAluno}`)
                         }
-                        console.log(`O aluno(a) ${nome} teve média: ${media.toFixed(1)} e esta: ${statusAluno}`)
-                    
                     }                    
                 })
             })
